@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sargassum_links">
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-holbox/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-cancun/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-isla-mujeres/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-cozumel/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-puerto-morelos/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-tulum/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-mahahual/</item>
+        <item>https://www.viajefest.com/sargazo-en-quintana-roo/hay-sargazo-en-playa-del-carmen/</item>
+    </string-array>
+</resources>
