@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
+        addSargassoItems(navView)
     }
 
     override fun onBackPressed() {
@@ -81,10 +82,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun addSargassoItems(menuView: NavigationView) {
         resources.getStringArray(R.array.sargassum_links).let {
-            it.forEach {
-                val url = UrlUtils().extractTitle(it)
-                menuView.menu.addItem(it) {
-                    goToUrl(url)
+            it.forEach { item ->
+                val title = UrlUtils().extractTitle(item)
+                menuView.menu.addItem(title) {
+                    goToUrl(item)
                 }
             }
         }
