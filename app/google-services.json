@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "312837492491",
+    "firebase_url": "https://monitoreo-sargazo-android.firebaseio.com",
+    "project_id": "monitoreo-sargazo-android",
+    "storage_bucket": "monitoreo-sargazo-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:312837492491:android:e9596873025aeb5c",
+        "android_client_info": {
+          "package_name": "com.yobijoss.monitoreodesargazo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "312837492491-g97tanahcblhod2qfn46vf3rkqsj21qd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yobijoss.monitoreodesargazo",
+            "certificate_hash": "408720fff78045cca8f068348bf5bb10fa93288d"
+          }
+        },
+        {
+          "client_id": "312837492491-fohim25jf3p57i5jhj0ns93d6jl3vvno.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpvb1VBzgE0mLeFe-JFMMiYbeH4dE3C1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "312837492491-fohim25jf3p57i5jhj0ns93d6jl3vvno.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

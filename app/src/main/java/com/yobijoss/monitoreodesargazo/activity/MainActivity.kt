@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.yobijoss.monitoreodesargazo.R
 import com.yobijoss.monitoreodesargazo.extension.addItem
 import com.yobijoss.monitoreodesargazo.util.UrlUtils
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,10 +34,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
+
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
         fab.setOnClickListener { view ->
-
         }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
