@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="start">Inicio</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="app_name">Monitoreo de Sargazo</string>
+    <string name="nav_header_title">Creado por Viajefest</string>
+    <string name="nav_header_subtitle">Descubre más en viajefest.com</string>
+    <string name="navigation_drawer_open">Abrir barra lateral de navegación</string>
+    <string name="navigation_drawer_close">Cerrar barra lateral de navegación</string>
+    <string name="nav_header_desc">Encabezado de barra lateral de navegación</string>
 </resources>

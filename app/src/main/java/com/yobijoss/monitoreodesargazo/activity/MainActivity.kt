@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yobijoss.monitoreodesargazo.R
 import com.yobijoss.monitoreodesargazo.extension.addItem
 import com.yobijoss.monitoreodesargazo.util.UrlUtils
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -34,8 +35,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fab: FloatingActionButton = findViewById(R.id.fab)
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+
         }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -88,8 +88,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.nav_start -> goToMainUrl()
         }
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        drawerLayout.closeDrawer(GravityCompat.START)
+        drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 
@@ -108,6 +107,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun goToUrl(url: String): Boolean {
         webView.loadUrl(url)
+        drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 
