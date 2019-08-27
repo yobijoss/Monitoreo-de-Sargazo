@@ -12,3 +12,6 @@
 /build
 /captures
 .externalNativeBuild
+*.pepk
+*keyStore*
+*/release
