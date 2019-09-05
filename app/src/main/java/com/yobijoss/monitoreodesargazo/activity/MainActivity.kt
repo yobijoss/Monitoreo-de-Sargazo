@@ -2,6 +2,7 @@ package com.yobijoss.monitoreodesargazo.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -13,6 +14,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yobijoss.monitoreodesargazo.R
@@ -21,9 +23,14 @@ import com.yobijoss.monitoreodesargazo.util.UrlUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+
+    private lateinit var currentUrl: String
+
+    private lateinit var btnShareUrl: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +43,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
+
+        btnShareUrl = findViewById(R.id.btnShareUrl)
+        btnShareUrl.setOnClickListener { shareUrl() }
 
         webView.settings.javaScriptEnabled = true
         webView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
@@ -72,7 +82,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
 
-
     private fun addSargassoItems(menuView: NavigationView) {
         resources.getStringArray(R.array.sargassum_links).let {
             it.forEach { item ->
@@ -85,15 +94,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun goToUrl(url: String): Boolean {
+        currentUrl = url
+        Log.d("monitoreo_sargazo", "The url is $url")
         webView.loadUrl(url)
         drawer_layout.closeDrawer(GravityCompat.START)
-        firebaseAnalytics.logEvent("URL_CLICKED", Bundle().apply { putString("url" ,  url) })
+        firebaseAnalytics.logEvent("URL_CLICKED", Bundle().apply { putString("url", url) })
         return true
     }
 
     private fun goToMainUrl() {
-        goToUrl(getString(R.string.main_url))
+        currentUrl = getString(R.string.main_url)
+        goToUrl(currentUrl)
     }
+
+    private fun shareUrl() {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.type ="text/plain"
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Sargassum Report")
+        shareIntent.putExtra(Intent.EXTRA_TEXT, currentUrl)
+
+        startActivity(Intent.createChooser(shareIntent, "Share link!"))
+    }
+
 
     class SargassumWebClient(private val mainActivity: MainActivity) : WebViewClient() {
 
