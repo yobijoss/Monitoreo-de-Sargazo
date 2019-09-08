@@ -41,9 +41,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
+                this, drawerLayout, toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -82,13 +82,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun addSargassoItems(menuView: NavigationView) {
         resources.getStringArray(R.array.sargassum_links).let {
-            it.forEach { item ->
+            it.forEachIndexed { index, item ->
                 val title = UrlUtils().extractTitle(item)
-                menuView.menu.addItem(title) {
+                menuView.menu.addItem(title, index, R.id.mainGroup) {
                     goToUrl(item)
                 }
             }
         }
+
+        menuView.menu.setGroupCheckable(R.id.mainGroup, true, true)
     }
 
     private fun goToUrl(url: String): Boolean {
@@ -107,7 +109,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun shareUrl() {
         val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.type ="text/plain"
+        shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Sargassum Report")
         shareIntent.putExtra(Intent.EXTRA_TEXT, currentUrl)
         AnalyticsUtil.logShareButtonClicked(getAnalytics(), currentUrl)
