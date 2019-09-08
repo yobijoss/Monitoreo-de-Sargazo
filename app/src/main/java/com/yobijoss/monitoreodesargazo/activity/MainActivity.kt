@@ -19,14 +19,13 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yobijoss.monitoreodesargazo.R
 import com.yobijoss.monitoreodesargazo.extension.addItem
+import com.yobijoss.monitoreodesargazo.util.AnalyticsUtil
 import com.yobijoss.monitoreodesargazo.util.UrlUtils
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     private lateinit var currentUrl: String
 
@@ -38,7 +37,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -98,7 +96,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.d("monitoreo_sargazo", "The url is $url")
         webView.loadUrl(url)
         drawer_layout.closeDrawer(GravityCompat.START)
-        firebaseAnalytics.logEvent("URL_CLICKED", Bundle().apply { putString("url", url) })
+        AnalyticsUtil.logUrlClicked(getAnalytics(), url)
         return true
     }
 
@@ -112,10 +110,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         shareIntent.type ="text/plain"
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Sargassum Report")
         shareIntent.putExtra(Intent.EXTRA_TEXT, currentUrl)
-
+        AnalyticsUtil.logShareButtonClicked(getAnalytics(), currentUrl)
         startActivity(Intent.createChooser(shareIntent, "Share link!"))
     }
 
+    private fun getAnalytics() = FirebaseAnalytics.getInstance(this)
 
     class SargassumWebClient(private val mainActivity: MainActivity) : WebViewClient() {
 
