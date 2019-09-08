@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         webView.settings.javaScriptEnabled = true
         webView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
-        webView.webViewClient = SargassumWebClient(this)
+        webView.webViewClient = SargassumWebClient()
         addSargassoItems(navView)
 
         viewModel.urlLiveData.value = getString(R.string.main_url)
@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun getAnalytics() = FirebaseAnalytics.getInstance(this)
 
-    class SargassumWebClient(private val mainActivity: MainActivity) : WebViewClient() {
+    inner class SargassumWebClient : WebViewClient() {
 
         override fun shouldOverrideUrlLoading(
             view: WebView?,
@@ -126,19 +126,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             request?.let {
                 val url = it.url.toString()
 
-                if (mainActivity.resources.getStringArray(R.array.sargassum_links).contains(url)) {
-                    mainActivity.displayUrl(url)
+                if (this@MainActivity.resources.getStringArray(R.array.sargassum_links).contains(url)) {
+                    this@MainActivity.displayUrl(url)
                     return false
                 }
             }
 
             // Otherwise, the link is not for a page on my site, so launch another Activity that handles URLs
             Intent(Intent.ACTION_VIEW, request?.url).apply {
-                startActivity(this@SargassumWebClient.mainActivity, this, null)
+                startActivity(this@MainActivity, this, null)
             }
 
             return true
         }
     }
-
 }
