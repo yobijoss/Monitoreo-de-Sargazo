@@ -8,4 +8,6 @@
     <string name="action_settings">Settings</string>
 
     <string name="start">Inicio</string>
+    <string name="get_sargassum_report">Share Sargassum Report</string>
+    <string name="share_link">Share the Report Link</string>
 </resources>

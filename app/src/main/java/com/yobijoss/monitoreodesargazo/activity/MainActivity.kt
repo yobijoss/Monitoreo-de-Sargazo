@@ -2,7 +2,6 @@ package com.yobijoss.monitoreodesargazo.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -14,22 +13,25 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.yobijoss.monitoreodesargazo.R
 import com.yobijoss.monitoreodesargazo.extension.addItem
 import com.yobijoss.monitoreodesargazo.util.AnalyticsUtil
 import com.yobijoss.monitoreodesargazo.util.UrlUtils
+import com.yobijoss.monitoreodesargazo.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var currentUrl: String
-
-    private lateinit var btnShareUrl: FloatingActionButton
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(MainViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,19 +39,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        viewModel.urlLiveData.observe(this, Observer { displayUrl(it) })
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close
+            this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         navView.setNavigationItemSelectedListener(this)
 
-        btnShareUrl = findViewById(R.id.btnShareUrl)
         btnShareUrl.setOnClickListener { shareUrl() }
 
         webView.settings.javaScriptEnabled = true
@@ -57,8 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         webView.webViewClient = SargassumWebClient(this)
         addSargassoItems(navView)
 
-        goToMainUrl()
-
+        viewModel.urlLiveData.value = getString(R.string.main_url)
     }
 
     override fun onBackPressed() {
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_start -> goToMainUrl()
+            R.id.nav_start -> viewModel.urlLiveData.value = getString(R.string.main_url)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
@@ -85,7 +86,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             it.forEachIndexed { index, item ->
                 val title = UrlUtils().extractTitle(item)
                 menuView.menu.addItem(title, index, R.id.mainGroup) {
-                    goToUrl(item)
+                    viewModel.urlLiveData.value = item
+                    true
                 }
             }
         }
@@ -93,39 +95,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuView.menu.setGroupCheckable(R.id.mainGroup, true, true)
     }
 
-    private fun goToUrl(url: String): Boolean {
-        currentUrl = url
-        Log.d("monitoreo_sargazo", "The url is $url")
+    private fun displayUrl(url: String): Boolean {
         webView.loadUrl(url)
         drawer_layout.closeDrawer(GravityCompat.START)
         AnalyticsUtil.logUrlClicked(getAnalytics(), url)
         return true
     }
 
-    private fun goToMainUrl() {
-        currentUrl = getString(R.string.main_url)
-        goToUrl(currentUrl)
-    }
 
     private fun shareUrl() {
         val shareIntent = Intent(Intent.ACTION_SEND)
+        val url = viewModel.urlLiveData.value
+
         shareIntent.type = "text/plain"
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Sargassum Report")
-        shareIntent.putExtra(Intent.EXTRA_TEXT, currentUrl)
-        AnalyticsUtil.logShareButtonClicked(getAnalytics(), currentUrl)
-        startActivity(Intent.createChooser(shareIntent, "Share link!"))
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.get_sargassum_report))
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_link)))
+
+        AnalyticsUtil.logShareButtonClicked(getAnalytics(), url)
     }
 
     private fun getAnalytics() = FirebaseAnalytics.getInstance(this)
 
     class SargassumWebClient(private val mainActivity: MainActivity) : WebViewClient() {
 
-        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        override fun shouldOverrideUrlLoading(
+            view: WebView?,
+            request: WebResourceRequest?
+        ): Boolean {
             request?.let {
                 val url = it.url.toString()
 
                 if (mainActivity.resources.getStringArray(R.array.sargassum_links).contains(url)) {
-                    mainActivity.goToUrl(url)
+                    mainActivity.displayUrl(url)
                     return false
                 }
             }
