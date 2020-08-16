@@ -119,6 +119,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     inner class SargassumWebClient : WebViewClient() {
 
+        override fun onPageFinished(view: WebView?, url: String?) {
+            super.onPageFinished(view, url)
+
+            webView.loadUrl(
+                """javascript:(function f() {
+                        let elements = document.getElementsByClassName('toggle-nav');
+                        while(elements.length > 0){
+                            elements[0].parentNode.removeChild(elements[0]);
+                        }
+                    } )()"""
+            )
+        }
+
         override fun shouldOverrideUrlLoading(
             view: WebView?,
             request: WebResourceRequest?
