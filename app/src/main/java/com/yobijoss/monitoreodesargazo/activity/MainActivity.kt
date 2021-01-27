@@ -7,6 +7,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -14,6 +15,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -29,9 +31,7 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(MainViewModel::class.java)
-    }
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        viewModel.urlLiveData.observe(this, Observer { displayUrl(it) })
+        mainViewModel.urlLiveData.observe(this, { displayUrl(it) })
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -55,11 +55,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         btnShareUrl.setOnClickListener { shareUrl() }
 
         webView.settings.javaScriptEnabled = true
-        webView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
+        webView.settings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
         webView.webViewClient = SargassumWebClient()
         addSargassoItems(navView)
 
-        viewModel.urlLiveData.value = getString(R.string.main_url)
+        mainViewModel.urlLiveData.value = getString(R.string.main_url)
     }
 
     override fun onBackPressed() {
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_start -> viewModel.urlLiveData.value = getString(R.string.main_url)
+            R.id.nav_start -> mainViewModel.urlLiveData.value = getString(R.string.main_url)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             it.forEachIndexed { index, item ->
                 val title = UrlUtils().extractTitle(item)
                 menuView.menu.addItem(title, index, R.id.mainGroup) {
-                    viewModel.urlLiveData.value = item
+                    mainViewModel.urlLiveData.value = item
                     true
                 }
             }
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun shareUrl() {
         val shareIntent = Intent(Intent.ACTION_SEND)
-        val url = viewModel.urlLiveData.value
+        val url = mainViewModel.urlLiveData.value
 
         shareIntent.type = "text/plain"
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.get_sargassum_report))
