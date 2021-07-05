@@ -1,12 +1,12 @@
 package com.yobijoss.monitoreodesargazo.util
 
-import java.util.*
+class
 
-class UrlUtils {
-    fun extractTitle(url: String) = url
-        .substringAfter("/sargazo-en-quintana-roo/hay-")
-        .substringBeforeLast("/")
-        .split("-")
-        .joinToString(" ") { if (it == "en") it else it.capitalize(Locale.US)}
+UrlUtils {
+  fun extractTitle(url: String) = url
+      .substringAfter("/sargazo-en-quintana-roo/hay-")
+      .substringBeforeLast("/")
+      .split("-")
+      .joinToString(" ") { if (it == "en") it else it.capitalize() }
 }
 

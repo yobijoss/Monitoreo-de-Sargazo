@@ -4,6 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
-
-    val urlLiveData = MutableLiveData<String>()
+  
+  val urlLiveData = MutableLiveData<String>()
 }
