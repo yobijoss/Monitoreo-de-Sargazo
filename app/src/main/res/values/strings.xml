@@ -10,4 +10,5 @@
     <string name="start">Inicio</string>
     <string name="get_sargassum_report">Share Sargassum Report</string>
     <string name="share_link">Share the Report Link</string>
+    <string name="share_button">share button</string>
 </resources>
