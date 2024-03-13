@@ -8,6 +8,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.window.OnBackInvokedDispatcher
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
@@ -28,7 +29,7 @@ import com.yobijoss.monitoreodesargazo.viewmodel.MainViewModel
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val viewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
+        ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private lateinit var mainBinding: ActivityMainBinding
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(mainBinding.root)
         setSupportActionBar(appBarMainBinding.toolbar)
 
-        viewModel.urlLiveData.observe(this, { displayUrl(it) })
+        viewModel.urlLiveData.observe(this) { displayUrl(it) }
 
         val drawerLayout: DrawerLayout = findViewById(R.id.main_drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
@@ -58,19 +59,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         appBarMainBinding.webView.settings.javaScriptEnabled = true
         appBarMainBinding.webView.settings.layoutAlgorithm =
-            WebSettings.LayoutAlgorithm.SINGLE_COLUMN
+            WebSettings.LayoutAlgorithm.NORMAL
         appBarMainBinding.webView.webViewClient = SargassumWebClient()
         addSargassoItems(navView)
 
         viewModel.urlLiveData.value = getString(R.string.main_url)
     }
 
-    override fun onBackPressed() {
+    override fun getOnBackInvokedDispatcher(): OnBackInvokedDispatcher {
         if (mainBinding.mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mainBinding.mainDrawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
         }
+        return super.getOnBackInvokedDispatcher()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
